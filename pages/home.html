@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Tareas - TaskFlow</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-tasks"></i>
+                    <h2>TaskFlow</h2>
+                </div>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <h3 id="userName">Usuario</h3>
+                    <p id="userEmail">usuario@email.com</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-filter="all">
+                    <i class="fas fa-list"></i>
+                    <span>Todas las tareas</span>
+                </button>
+                <button class="nav-item" data-filter="pending">
+                    <i class="fas fa-clock"></i>
+                    <span>Pendientes</span>
+                    <span class="badge" id="pendingCount">0</span>
+                </button>
+                <button class="nav-item" data-filter="completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Completadas</span>
+                    <span class="badge" id="completedCount">0</span>
+                </button>
+                <button class="nav-item" data-filter="high">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Alta prioridad</span>
+                    <span class="badge" id="highPriorityCount">0</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <h1>Mis Tareas</h1>
+                    <p id="taskSummary">Tienes <span id="totalTasks">0</span> tareas</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" id="newTaskBtn">
+                        <i class="fas fa-plus"></i> Nueva Tarea
+                    </button>
+                    <div class="date-display">
+                        <span id="currentDate"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Task Filters -->
+            <div class="task-filters">
+                <div class="filter-group">
+                    <label for="sortBy">Ordenar por:</label>
+                    <select id="sortBy" class="filter-select">
+                        <option value="created_at">Fecha de creación</option>
+                        <option value="due_date">Fecha límite</option>
+                        <option value="priority">Prioridad</option>
+                        <option value="title">Título</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sortOrder">Orden:</label>
+                    <select id="sortOrder" class="filter-select">
+                        <option value="desc">Descendente</option>
+                        <option value="asc">Ascendente</option>
+                    </select>
+                </div>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchTask" placeholder="Buscar tareas...">
+                </div>
+            </div>
+
+            <!-- Tasks Container -->
+            <div class="tasks-container">
+                <div class="tasks-header">
+                    <h2>Tareas</h2>
+                    <div class="tasks-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="pendingStats">0 pendientes</span>
+                        </span>
+                        <span class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="completedStats">0 completadas</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Tasks List -->
+                <div class="tasks-list" id="tasksList">
+                    <!-- Las tareas se cargarán aquí dinámicamente -->
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para crear/editar tareas -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nueva Tarea</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" id="taskId">
+                
+                <div class="form-group">
+                    <label for="taskTitle">Título *</label>
+                    <input type="text" id="taskTitle" required placeholder="¿Qué necesitas hacer?">
+                </div>
+
+                <div class="form-group">
+                    <label for="taskDescription">Descripción</label>
+                    <textarea id="taskDescription" rows="3" placeholder="Detalles adicionales..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskDueDate">Fecha límite</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Prioridad</label>
+                        <select id="taskPriority">
+                            <option value="1">Baja</option>
+                            <option value="2" selected>Media</option>
+                            <option value="3">Alta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelTask">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveTask">
+                        Guardar Tarea
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cargar la librería de Supabase - SDK de Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Scripts -->
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/tasks.js"></script>   
+
+    <script>
+    // Verificar autenticación en home.html
+    (async function() 
+    {
+        // ✅ Primero verifica que supabaseClient existe
+        if (!window.supabaseClient) {
+            console.error('ERROR: supabaseClient no está definido');
+            return;
+        }
+        
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        
+        if (!session) {
+            window.location.href = 'auth.html';
+            return;
+        }
+        
+        console.log('Usuario autenticado:', session.user.email);
+    })();
+    </script>
+
+</body>
+</html>
