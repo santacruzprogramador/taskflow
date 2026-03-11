@@ -1,10 +1,10 @@
-# My Todos – Supabase
+# TaskFlow-santacruz – Supabase
 
 Aplicación web de gestión de tareas con autenticación OAuth (GitHub) utilizando Supabase como backend.
 
 ## 🌐 Demo
 
-https://taskflow.vercel.app
+https://taskflow-santacruz.vercel.app/
 
 
 ## 🚀 Tecnologías
@@ -96,4 +96,4 @@ taskflow
 ## 👨‍💻 Autor
 
 José Alberto Santacruz  
-Full Stack Developer (en formación)
+Full Stack Developer 
